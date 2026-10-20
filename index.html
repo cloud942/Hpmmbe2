@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Inventaris HP &amp; Gadget V1.8-2026</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<style>
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --primary:#2e7d32; --primary-dark:#1b5e20;
+  --primary-light:#4caf50; --primary-soft:#e8f5e9; --text:#1b2420; --muted:#6b7a72;
+  --border:#e2e8e4; --danger:#c62828; --warn:#ef6c00; --info:#0277bd;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.05);
+  --shadow-lg:0 4px 16px rgba(0,0,0,.12);
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--text); font-size:15px; line-height:1.5;
+  padding-bottom:30px;
+}
+
+/* ---------- LOADING SCREEN ---------- */
+#loader{
+  position:fixed; inset:0; z-index:9999; background:#fff;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:18px; transition:opacity .5s ease;
+}
+#loader .ic{
+  width:68px;height:68px;border-radius:18px;background:var(--primary-soft);
+  display:flex;align-items:center;justify-content:center;font-size:34px;
+  box-shadow:var(--shadow);
+}
+#typeTarget{
+  font-size:20px;font-weight:700;color:var(--primary-dark);
+  min-height:28px;letter-spacing:.3px;text-align:center;padding:0 16px;
+}
+#typeTarget .cur{display:inline-block;width:2px;height:20px;background:var(--primary);
+  vertical-align:-3px;margin-left:2px;animation:blink .7s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+#loader .bar{width:170px;height:3px;background:var(--border);border-radius:3px;overflow:hidden}
+#loader .bar i{display:block;height:100%;width:0;background:var(--primary);
+  border-radius:3px;animation:fill 2s ease forwards}
+@keyframes fill{to{width:100%}}
+#loader .sub{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+
+/* ---------- HEADER ---------- */
+header{
+  background:var(--primary); color:#fff; padding:14px 16px 12px;
+  box-shadow:var(--shadow); position:sticky; top:0; z-index:50;
+}
+header .row{display:flex;align-items:baseline;gap:8px}
+header h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.2px;flex:1}
+header .ver{font-size:10px;opacity:.65;font-weight:600;white-space:nowrap}
+header .sub{font-size:11.5px;opacity:.8;margin-top:2px}
+
+/* ---------- TABS ---------- */
+nav.tabs{
+  display:flex;background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:60px;z-index:49;box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+nav.tabs button{
+  flex:1;border:0;background:none;padding:12px 4px 10px;font-size:12.5px;font-weight:600;
+  color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;
+  font-family:inherit;transition:.15s;
+}
+nav.tabs button.on{color:var(--primary);border-bottom-color:var(--primary);background:var(--primary-soft)}
+nav.tabs button .ic{display:block;font-size:17px;margin-bottom:1px}
+
+main{padding:14px 12px}
+.pane{display:none}
+.pane.on{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- CARD / FORM ---------- */
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:15px;box-shadow:var(--shadow);margin-bottom:13px;
+}
+.card h3{margin:0 0 12px;font-size:13.5px;font-weight:700;color:var(--primary-dark);
+  display:flex;align-items:center;gap:7px}
+.card h3 .n{background:var(--primary-soft);color:var(--primary-dark);width:21px;height:21px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px}
+
+label.fl{display:block;font-size:12px;font-weight:600;color:var(--muted);
+  margin:0 0 5px;letter-spacing:.2px}
+input[type=text],input[type=date],textarea,select{
+  width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:15px;font-family:inherit;background:#fcfdfc;color:var(--text);
+  transition:.15s;outline:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--primary-light);background:#fff;
+  box-shadow:0 0 0 3px rgba(76,175,80,.13)}
+textarea{min-height:58px;resize:vertical}
+.fg{margin-bottom:13px}
+.fg:last-child{margin-bottom:0}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.35}
+
+.scanrow{display:flex;gap:7px;align-items:stretch}
+.scanrow input{flex:1;min-width:0;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:13.5px;letter-spacing:.3px}
+.scanrow button{
+  flex:0 0 auto;padding:0 13px;border:0;border-radius:10px;background:var(--primary);
+  color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  min-width:58px;line-height:1.1;
+}
+.scanrow button .ic{font-size:17px}
+.scanrow button:active{background:var(--primary-dark);transform:scale(.97)}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 16px;border:0;border-radius:11px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:inherit;background:var(--primary);color:#fff;
+  transition:.15s;box-shadow:var(--shadow);
+}
+.btn:active{transform:scale(.98)}
+.btn.block{width:100%}
+.btn.ghost{background:var(--surface);color:var(--primary-dark);border:1.5px solid var(--border);box-shadow:none}
+.btn.danger{background:var(--danger)}
+.btn.warnb{background:var(--warn)}
+.btn.infob{background:var(--info)}
+.btn.sm{padding:9px 13px;font-size:12.5px}
+.btn:disabled{opacity:.5;pointer-events:none}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.btnrow .btn{flex:1;min-width:130px}
+
+/* ---------- TABLE ---------- */
+.tbwrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+thead th{
+  background:var(--primary);color:#fff;padding:10px 9px;text-align:left;
+  font-weight:600;font-size:11.5px;white-space:nowrap;letter-spacing:.2px;
+}
+tbody td{padding:9px;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr:nth-child(even){background:#fafbfa}
+tbody tr:last-child td{border-bottom:0}
+td.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;word-break:break-all;max-width:170px}
+td.act{white-space:nowrap}
+td.act button{border:0;background:none;font-size:17px;cursor:pointer;padding:2px 4px}
+
+.pager{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:11px;flex-wrap:wrap}
+.pager button{
+  min-width:34px;height:34px;border:1.5px solid var(--border);background:var(--surface);
+  border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;
+  font-family:inherit;padding:0 8px;
+}
+.pager button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pager button:disabled{opacity:.4}
+.pginfo{font-size:11.5px;color:var(--muted);text-align:center;margin-top:7px}
+
+.empty{text-align:center;padding:36px 18px;color:var(--muted)}
+.empty .ic{font-size:40px;opacity:.35;display:block;margin-bottom:9px}
+.empty p{margin:0;font-size:13px}
+
+/* ---------- STATS ---------- */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:12px;box-shadow:var(--shadow)}
+.stat .v{font-size:23px;font-weight:800;color:var(--primary-dark);line-height:1.1}
+.stat .l{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600;letter-spacing:.2px}
+
+/* ---------- MODAL ---------- */
+.modal{
+  position:fixed;inset:0;z-index:200;background:rgba(10,20,15,.72);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.modal.on{display:flex}
+.sheet{
+  background:var(--surface);width:100%;max-width:560px;border-radius:18px 18px 0 0;
+  max-height:94vh;overflow-y:auto;animation:up .25s ease;
+}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.sheet header{position:static;border-radius:18px 18px 0 0;padding:13px 16px;
+  display:flex;align-items:center;gap:10px}
+.sheet header h2{margin:0;font-size:15px;font-weight:700;flex:1}
+.sheet header button{background:rgba(255,255,255,.2);border:0;color:#fff;
+  width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;line-height:1}
+.sheet .body{padding:15px}
+
+/* ---------- CAMERA ---------- */
+#vidWrap{position:relative;background:#000;border-radius:12px;overflow:hidden;line-height:0}
+#vid{width:100%;display:block}
+#roi{
+  position:absolute;left:6%;top:42%;width:88%;height:16%;
+  border:2px solid var(--primary-light);border-radius:7px;
+  box-shadow:0 0 0 2000px rgba(0,0,0,.45);pointer-events:none;
+}
+#roi::after{
+  content:"baris UUID di dalam kotak ini";position:absolute;left:0;right:0;top:-24px;
+  color:#fff;font-size:10.5px;text-align:center;font-weight:600;text-shadow:0 1px 3px #000;
+}
+#roi .ln{position:absolute;left:0;right:0;height:2px;background:var(--primary-light);
+  opacity:.8;animation:scanln 2s ease-in-out infinite}
+@keyframes scanln{0%,100%{top:4%}50%{top:92%}}
+.camtools{display:flex;gap:8px;margin-top:11px}
+.camtools .btn{flex:1}
+#ocrStat{
+  margin-top:11px;padding:10px 12px;border-radius:10px;background:var(--primary-soft);
+  font-size:12.5px;color:var(--primary-dark);display:none;font-weight:600;
+}
+#ocrStat.on{display:block}
+#ocrStat.err{background:#ffebee;color:var(--danger)}
+#prevWrap{margin-top:11px;display:none}
+#prevWrap.on{display:block}
+#prevWrap canvas{width:100%;border:1px solid var(--border);border-radius:9px;background:#fff}
+#prevWrap .lb{font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600}
+#qrbox{width:100%;border-radius:12px;overflow:hidden}
+#qrbox video{border-radius:12px}
+
+/* ---------- CROP & ZOOM ---------- */
+#zoomRow{display:flex;align-items:center;gap:9px;margin-top:11px}
+#zoomRow .lb{font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+#zoomRow input[type=range]{flex:1;accent-color:var(--primary)}
+#zoomRow #zoomVal{font-size:11.5px;color:var(--primary-dark);font-weight:700;
+  min-width:36px;text-align:right}
+#cropWrap{position:relative;background:#10201a;border-radius:12px;overflow:hidden;
+  touch-action:none;line-height:0;user-select:none}
+#cropCv{display:block;width:100%;height:100%}
+#cropFrame{position:absolute;border:2px solid var(--primary-light);border-radius:6px;
+  box-shadow:0 0 0 2000px rgba(0,0,0,.5);pointer-events:none}
+#cropFrame::after{content:"baris UUID di sini";position:absolute;left:0;right:0;top:-21px;
+  color:#fff;font-size:10px;text-align:center;font-weight:600;text-shadow:0 1px 3px #000}
+#galeriRow{display:flex;justify-content:center;margin-top:9px}
+#galeriRow button{border:0;background:none;color:var(--muted);font-size:11.5px;
+  font-weight:600;cursor:pointer;font-family:inherit;padding:5px 9px;border-radius:8px}
+#galeriRow button:active{background:var(--primary-soft);color:var(--primary-dark)}
+#btnHexRow{display:flex;justify-content:flex-end;margin-top:6px}
+#btnHex{border:1.5px solid var(--border);background:var(--surface);color:var(--primary-dark);
+  border-radius:9px;padding:6px 11px;font-size:11px;font-weight:700;cursor:pointer;
+  font-family:inherit}
+#btnHex:active{background:var(--primary-soft)}
+
+/* ---------- FOTO ---------- */
+.fotos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}
+.fotos .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;
+  border:1px solid var(--border);background:#eef2f0}
+.fotos .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.fotos .ph .x{position:absolute;top:4px;right:4px;width:23px;height:23px;border:0;
+  border-radius:50%;background:rgba(198,40,40,.92);color:#fff;font-size:12px;
+  line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+.fotos .ph .n{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.55);color:#fff;
+  font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:20px}
+.fotos .add{aspect-ratio:1;border:1.5px dashed #cfd9d4;border-radius:10px;background:#fafbfa;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:var(--muted);font-size:10.5px;font-weight:600;cursor:pointer;text-align:center;padding:4px}
+.fotos .add .ic{font-size:22px;opacity:.6}
+.fotos .add:active{background:var(--primary-soft);border-color:var(--primary-light)}
+td.thumb img{width:42px;height:42px;object-fit:cover;border-radius:7px;
+  border:1px solid var(--border);cursor:pointer;display:block}
+td.thumb .cnt{font-size:9.5px;color:var(--muted);font-weight:700;margin-top:2px;display:block}
+
+#viewer{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.93);display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:18px}
+#viewer.on{display:flex}
+#viewer img{max-width:100%;max-height:74vh;border-radius:10px;object-fit:contain}
+#viewer .cls{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.18);color:#fff;border:0;font-size:19px;cursor:pointer}
+#viewer .cap{color:#fff;font-size:12.5px;opacity:.85;text-align:center}
+#viewer .nav{display:flex;gap:10px}
+#viewer .nav button{padding:10px 18px;border-radius:10px;border:0;background:rgba(255,255,255,.16);
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+#viewer .nav button:disabled{opacity:.3}
+
+.note{
+  background:#fff8e1;border:1px solid #ffe082;color:#795548;border-radius:11px;
+  padding:11px 13px;font-size:12px;line-height:1.45;margin-bottom:13px;
+}
+.note b{color:#5d4037}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);
+  background:#263238;color:#fff;padding:12px 19px;border-radius:11px;font-size:13.5px;
+  font-weight:600;z-index:500;box-shadow:var(--shadow-lg);transition:transform .28s ease;
+  max-width:88vw;text-align:center;
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--danger)}
+.toast.ok{background:var(--primary-dark)}
+
+.srch{position:relative;margin-bottom:11px}
+.srch input{padding-left:36px}
+.srch .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  font-size:15px;opacity:.45;pointer-events:none}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;
+  font-weight:700;background:var(--primary-soft);color:var(--primary-dark)}
+hr.sep{border:0;border-top:1px solid var(--border);margin:14px 0}
+</style>
+</head>
+<body>
+
+<!-- ============ LOADING ============ -->
+<div id="loader">
+  <div class="ic">📱</div>
+  <div id="typeTarget"></div>
+  <div class="bar"><i></i></div>
+  <div class="sub">V1.8-2026</div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="row">
+    <h1>Inventaris HP &amp; Gadget</h1>
+    <span class="ver">V1.8-2026</span>
+  </div>
+  <div class="sub">Pencatatan serah-terima gadget &middot; offline</div>
+</header>
+
+<nav class="tabs">
+  <button data-tab="input" class="on"><span class="ic">➕</span>Input</button>
+  <button data-tab="data"><span class="ic">📋</span>Data</button>
+  <button data-tab="set"><span class="ic">⚙️</span>Pengaturan</button>
+</nav>
+
+<main>
+
+<!-- ============ TAB INPUT ============ -->
+<section class="pane on" id="pane-input">
+  <div class="card">
+    <h3><span class="n">1</span>Data Penerima</h3>
+    <div class="fg">
+      <label class="fl">Nama Penerima</label>
+      <input type="text" id="fNama" placeholder="Nama lengkap penerima" autocomplete="off" list="dlNama">
+      <datalist id="dlNama"></datalist>
+    </div>
+    <div class="fg">
+      <label class="fl">Jabatan</label>
+      <input type="text" id="fJabatan" placeholder="mis. Asisten Divisi / Mandor / Krani" autocomplete="off" list="dlJabatan">
+      <datalist id="dlJabatan"></datalist>
+    </div>
+    <div class="fg">
+      <label class="fl">Nama Pemakai</label>
+      <input type="text" id="fPemakai" placeholder="Nama yang memakai gadget" autocomplete="off" list="dlPemakai">
+      <datalist id="dlPemakai"></datalist>
+    </div>
+    <div class="fg">
+      <label class="fl">Jabatan Pemakai</label>
+      <select id="fJabPemakai">
+        <option value="">— pilih jabatan —</option>
+        <option>Manager</option>
+        <option>KTU</option>
+        <option>Askep</option>
+        <option>Asisten</option>
+        <option>Mandor Panen</option>
+        <option>Kerani Panen</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">Divisi</label>
+      <select id="fDivisi">
+        <option value="">— pilih divisi —</option>
+        <option>Divisi 1</option>
+        <option>Divisi 2</option>
+        <option>Divisi 3</option>
+        <option>Divisi 4</option>
+        <option>Divisi 5</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">Merek / Tipe HP</label>
+      <input type="text" id="fMerek" placeholder="mis. Samsung SM-A366B/DS" autocomplete="off" list="dlMerek">
+      <datalist id="dlMerek"></datalist>
+    </div>
+    <div class="fg">
+      <label class="fl">Tanggal</label>
+      <input type="date" id="fTgl">
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">2</span>Nomor Identitas</h3>
+    <div class="fg">
+      <label class="fl">UUID &mdash; foto teks di layar</label>
+      <div class="scanrow">
+        <input type="text" id="fUuid" placeholder="Hasil foto muncul di sini" autocomplete="off">
+        <button type="button" id="btnOcr"><span class="ic">📷</span>Foto</button>
+      </div>
+      <div id="btnHexRow"><button type="button" id="btnHex">⌁ Perbaiki ke format hex</button></div>
+      <div class="hint">Foto baris UUID, lalu atur posisinya sebelum dibaca. Hasil bisa diedit manual.</div>
+    </div>
+    <div class="fg">
+      <label class="fl">IMEI 1 &mdash; scan barcode / QR</label>
+      <div class="scanrow">
+        <input type="text" id="fImei" placeholder="Hasil scan muncul di sini" autocomplete="off" inputmode="numeric">
+        <button type="button" id="btnScan"><span class="ic">🔲</span>Scan</button>
+      </div>
+      <div class="hint">Membaca QR Code maupun barcode garis (Code128, EAN, Code39, ITF). Bisa juga diketik manual di kolom ini.</div>
+    </div>
+    <div class="fg">
+      <label class="fl">Keterangan <span style="font-weight:400">(opsional)</span></label>
+      <textarea id="fKet" placeholder="Catatan tambahan..."></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">3</span>Foto Serah Terima</h3>
+    <div class="hint" style="margin:-6px 0 0">
+      Dokumentasi saat gadget diserahkan &mdash; maksimal 3 foto. Menekan kotak foto
+      langsung membuka kamera. Foto otomatis dikecilkan agar hemat penyimpanan.
+    </div>
+    <div class="fotos" id="fotoGrid"></div>
+    <div id="galeriRow"><button type="button" id="btnGaleri">🖼️ atau pilih dari galeri</button></div>
+    <input type="file" id="fileFoto" accept="image/*" capture="environment" style="display:none">
+    <input type="file" id="fileGaleri" accept="image/*" multiple style="display:none">
+  </div>
+
+  <div class="btnrow">
+    <button class="btn block" id="btnSimpan"><span>💾</span>Simpan Data</button>
+    <button class="btn ghost" id="btnReset" style="flex:0 0 auto;min-width:0;padding:12px 15px">↺</button>
+  </div>
+  <input type="hidden" id="fEditId" value="">
+</section>
+
+<!-- ============ TAB DATA ============ -->
+<section class="pane" id="pane-data">
+  <div class="stats">
+    <div class="stat"><div class="v" id="stTotal">0</div><div class="l">TOTAL GADGET</div></div>
+    <div class="stat"><div class="v" id="stMerek">0</div><div class="l">JENIS MEREK</div></div>
+    <div class="stat"><div class="v" id="stDivisi">0</div><div class="l">DIVISI TERISI</div></div>
+    <div class="stat"><div class="v" id="stPemakai">0</div><div class="l">PEMAKAI</div></div>
+  </div>
+  <div class="srch">
+    <span class="ic">🔍</span>
+    <input type="text" id="fCari" placeholder="Cari nama, pemakai, jabatan, divisi, merek, UUID, IMEI...">
+  </div>
+  <div id="tblHost"></div>
+  <div class="pager" id="pager"></div>
+  <div class="pginfo" id="pgInfo"></div>
+  <hr class="sep">
+  <button class="btn block infob" id="btnExcel"><span>📊</span>Export ke Excel</button>
+</section>
+
+<!-- ============ TAB PENGATURAN ============ -->
+<section class="pane" id="pane-set">
+  <div class="note">
+    <b>Catatan penting:</b> aplikasi ini butuh kamera, jadi harus dibuka lewat alamat <b>HTTPS</b>
+    (Netlify / GitHub Pages). Kalau file dibuka langsung dari File Manager HP, kamera tidak akan aktif.
+    Mesin OCR juga mengunduh data bahasa sekali saat pertama dipakai &mdash; setelah itu tersimpan di browser.
+  </div>
+
+  <div class="card">
+    <h3><span class="n">💾</span>Backup &amp; Restore</h3>
+    <div class="hint" style="margin:-6px 0 12px">Simpan seluruh data ke file JSON, atau pulihkan dari file backup.</div>
+    <div class="btnrow">
+      <button class="btn" id="btnBackup"><span>⬇️</span>Backup JSON</button>
+      <button class="btn warnb" id="btnRestore"><span>⬆️</span>Restore JSON</button>
+    </div>
+    <input type="file" id="fileRestore" accept=".json,application/json" style="display:none">
+  </div>
+
+  <div class="card">
+    <h3><span class="n">🧪</span>Uji Perangkat</h3>
+    <div class="hint" style="margin:-6px 0 12px">Cek apakah kamera dan mesin OCR siap dipakai di HP ini.</div>
+    <button class="btn ghost block" id="btnCek">Jalankan Pemeriksaan</button>
+    <div id="cekHasil" style="margin-top:11px;font-size:12.5px;line-height:1.7"></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="n">⚠️</span>Zona Bahaya</h3>
+    <div class="hint" style="margin:-6px 0 12px">Menghapus seluruh data permanen. Backup dulu sebelum menekan ini.</div>
+    <button class="btn danger block" id="btnHapusAll">Hapus Semua Data</button>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ MODAL OCR ============ -->
+<div class="modal" id="mdOcr">
+  <div class="sheet">
+    <header>
+      <h2 id="ocrTitle">📷 Baca UUID</h2>
+      <button type="button" id="closeOcr">✕</button>
+    </header>
+    <div class="body">
+
+      <!-- LANGKAH 1 : kamera -->
+      <div id="step1">
+        <div id="vidWrap">
+          <video id="vid" playsinline muted autoplay></video>
+          <div id="roi"><div class="ln"></div></div>
+        </div>
+        <div id="zoomRow" style="display:none">
+          <span class="lb">🔍 Zoom</span>
+          <input type="range" id="zoomSl">
+          <span id="zoomVal">1.0×</span>
+        </div>
+        <div class="camtools">
+          <button class="btn" id="btnJepret"><span>⚡</span>Baca UUID</button>
+          <button class="btn ghost" id="btnTorch" style="flex:0 0 auto;min-width:0;padding:12px 15px">🔦</button>
+        </div>
+        <div class="hint" style="text-align:center">
+          Posisikan baris UUID di dalam kotak hijau, lalu tekan Baca UUID.
+          Hanya isi kotak yang dibaca.
+        </div>
+      </div>
+
+      <!-- LANGKAH 2 : atur crop -->
+      <div id="step2" style="display:none">
+        <div id="cropWrap">
+          <canvas id="cropCv"></canvas>
+          <div id="cropFrame"></div>
+        </div>
+        <div class="camtools">
+          <button class="btn ghost" id="btnZout" style="flex:0 0 auto;min-width:52px;padding:12px 0">−</button>
+          <button class="btn" id="btnBaca"><span>⚡</span>Baca Ulang</button>
+          <button class="btn ghost" id="btnZin" style="flex:0 0 auto;min-width:52px;padding:12px 0">+</button>
+        </div>
+        <div class="camtools" style="margin-top:7px">
+          <button class="btn ghost" id="btnUlang">↺ Kembali ke Kamera</button>
+        </div>
+        <div class="hint" style="text-align:center">
+          Layar ini hanya muncul kalau pembacaan otomatis kurang yakin.
+          Geser satu jari, cubit dua jari, lalu tekan Baca Ulang.
+        </div>
+      </div>
+
+      <div id="ocrStat"></div>
+      <div id="prevWrap">
+        <div class="lb">Area yang dibaca:</div>
+        <canvas id="prevCv"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL SCAN ============ -->
+<div class="modal" id="mdScan">
+  <div class="sheet">
+    <header>
+      <h2>🔲 Scan Barcode / QR</h2>
+      <button type="button" id="closeScan">✕</button>
+    </header>
+    <div class="body">
+      <div id="qrbox"></div>
+      <div class="hint" style="margin-top:10px;text-align:center">
+        Arahkan ke barcode garis atau QR code. Hasil otomatis masuk ke kolom IMEI 1.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VIEWER FOTO ============ -->
+<div id="viewer">
+  <button class="cls" id="closeView">✕</button>
+  <img id="viewImg" alt="Foto serah terima">
+  <div class="cap" id="viewCap"></div>
+  <div class="nav">
+    <button id="viewPrev">‹ Sebelumnya</button>
+    <button id="viewNext">Berikutnya ›</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   INVENTARIS HP & GADGET  V1.8-2026
+   Offline (IndexedDB) · Clean Material
+   ========================================================= */
+
+/* ---------- LOADING: efek ketik ---------- */
+(function(){
+  const txt="Inventaris HP & Gadget", el=document.getElementById('typeTarget');
+  let i=0;
+  const cur='<span class="cur"></span>';
+  (function tick(){
+    el.innerHTML=txt.slice(0,i)+cur;
+    if(i++<txt.length) setTimeout(tick,52);
+  })();
+  setTimeout(()=>{
+    const l=document.getElementById('loader');
+    l.style.opacity='0';
+    setTimeout(()=>l.remove(),500);
+  },2050);
+})();
+
+/* ---------- TOAST ---------- */
+let toastT;
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast on '+(type||'');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.className='toast '+(type||''),2600);
+}
+
+/* ---------- INDEXEDDB ---------- */
+const DB_NAME='InventarisHPDB', DB_VER=1, STORE='gadget';
+let db=null;
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(DB_NAME,DB_VER);
+    r.onupgradeneeded=e=>{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains(STORE)){
+        const s=d.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});
+        s.createIndex('nama','nama',{unique:false});
+        s.createIndex('uuid','uuid',{unique:false});
+        s.createIndex('imei','imei',{unique:false});
+      }
+    };
+    r.onsuccess=e=>{db=e.target.result;res(db)};
+    r.onerror=e=>rej(e.target.error);
+  });
+}
+function tx(mode){return db.transaction(STORE,mode).objectStore(STORE)}
+function dbAll(){return new Promise((res,rej)=>{const r=tx('readonly').getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+function dbPut(o){return new Promise((res,rej)=>{const r=tx('readwrite').put(o);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function dbDel(id){return new Promise((res,rej)=>{const r=tx('readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+function dbClear(){return new Promise((res,rej)=>{const r=tx('readwrite').clear();r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
+
+let DATA=[];
+async function loadData(){ DATA=await dbAll(); DATA.sort((a,b)=>(b.id||0)-(a.id||0)); }
+
+/* ---------- STATE PERSIST ---------- */
+const LS='invhp_state_v1';
+function getState(){try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}}
+function setState(p){try{localStorage.setItem(LS,JSON.stringify(Object.assign(getState(),p)))}catch(e){}}
+
+/* ---------- TAB (lazy render) ---------- */
+const rendered={input:true,data:false,set:false};
+function showTab(name){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='pane-'+name));
+  setState({tab:name});
+  if(name==='data'&&!rendered.data){rendered.data=true;}
+  if(name==='data') renderTable();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+/* ---------- FORM ---------- */
+const $=id=>document.getElementById(id);
+function todayStr(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+/* ---------- FOTO SERAH TERIMA ---------- */
+const MAX_FOTO=3, FOTO_MAX_PX=1280, FOTO_Q=0.72;
+let FOTOS=[];   // array dataURL untuk record yang sedang diisi
+
+function renderFotoGrid(){
+  const g=$('fotoGrid');
+  let h='';
+  FOTOS.forEach((src,i)=>{
+    h+='<div class="ph"><img src="'+src+'" onclick="openViewer(FOTOS,'+i+',\'Foto serah terima\')">'+
+       '<span class="n">'+(i+1)+'</span>'+
+       '<button class="x" onclick="hapusFoto('+i+')" title="Hapus foto">✕</button></div>';
+  });
+  if(FOTOS.length<MAX_FOTO){
+    h+='<div class="add" onclick="document.getElementById(\'fileFoto\').click()">'+
+       '<span class="ic">📸</span>Buka Kamera<br>('+FOTOS.length+'/'+MAX_FOTO+')</div>';
+  }
+  g.innerHTML=h;
+  const gr=$('galeriRow'); if(gr) gr.style.display = FOTOS.length<MAX_FOTO ? 'flex' : 'none';
+}
+function hapusFoto(i){ FOTOS.splice(i,1); renderFotoGrid(); toast('Foto dihapus'); }
+
+function kecilkanFoto(file){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=()=>{
+      const im=new Image();
+      im.onload=()=>{
+        let w=im.width,h=im.height;
+        const sc=Math.min(1,FOTO_MAX_PX/Math.max(w,h));
+        w=Math.round(w*sc); h=Math.round(h*sc);
+        const cv=document.createElement('canvas');
+        cv.width=w; cv.height=h;
+        const cx=cv.getContext('2d');
+        cx.imageSmoothingQuality='high';
+        cx.drawImage(im,0,0,w,h);
+        res(cv.toDataURL('image/jpeg',FOTO_Q));
+      };
+      im.onerror=()=>rej(new Error('Gambar tidak terbaca'));
+      im.src=fr.result;
+    };
+    fr.onerror=()=>rej(new Error('File gagal dibuka'));
+    fr.readAsDataURL(file);
+  });
+}
+async function terimaFoto(input){
+  const files=[...input.files];
+  input.value='';
+  if(!files.length) return;
+  const sisa=MAX_FOTO-FOTOS.length;
+  if(sisa<=0){ toast('Sudah '+MAX_FOTO+' foto, hapus salah satu dulu','err'); return; }
+  if(files.length>sisa) toast('Hanya '+sisa+' foto lagi yang muat','err');
+  for(const f of files.slice(0,sisa)){
+    try{ FOTOS.push(await kecilkanFoto(f)); }
+    catch(e){ toast('Gagal memproses foto: '+e.message,'err'); }
+  }
+  renderFotoGrid();
+}
+$('fileFoto').onchange   = function(){ terimaFoto(this) };
+$('fileGaleri').onchange = function(){ terimaFoto(this) };
+$('btnGaleri').onclick   = ()=>$('fileGaleri').click();
+
+/* viewer foto */
+let VW={list:[],i:0,label:''};
+function openViewer(list,i,label){
+  VW={list:list.slice(),i:i,label:label||''};
+  paintViewer(); $('viewer').classList.add('on');
+}
+function paintViewer(){
+  $('viewImg').src=VW.list[VW.i]||'';
+  $('viewCap').textContent=(VW.label?VW.label+' — ':'')+'Foto '+(VW.i+1)+' dari '+VW.list.length;
+  $('viewPrev').disabled=VW.i<=0;
+  $('viewNext').disabled=VW.i>=VW.list.length-1;
+}
+$('closeView').onclick=()=>$('viewer').classList.remove('on');
+$('viewPrev').onclick=()=>{if(VW.i>0){VW.i--;paintViewer()}};
+$('viewNext').onclick=()=>{if(VW.i<VW.list.length-1){VW.i++;paintViewer()}};
+$('viewer').onclick=e=>{if(e.target===$('viewer'))$('viewer').classList.remove('on')};
+
+function resetForm(){
+  $('fNama').value=''; $('fJabatan').value=''; $('fPemakai').value='';
+  $('fJabPemakai').value=''; $('fDivisi').value='';
+  $('fMerek').value=''; $('fUuid').value='';
+  $('fImei').value=''; $('fKet').value=''; $('fEditId').value='';
+  $('fTgl').value=todayStr();
+  FOTOS=[]; renderFotoGrid();
+  $('btnSimpan').innerHTML='<span>💾</span>Simpan Data';
+}
+$('btnReset').onclick=()=>{resetForm();toast('Form dikosongkan')};
+
+$('btnSimpan').onclick=async function(){
+  const nama=$('fNama').value.trim(), jabatan=$('fJabatan').value.trim(), merek=$('fMerek').value.trim();
+  const pemakai=$('fPemakai').value.trim(), jabPemakai=$('fJabPemakai').value, divisi=$('fDivisi').value;
+  const uuid=$('fUuid').value.trim(), imei=$('fImei').value.trim();
+  if(!nama){toast('Nama penerima wajib diisi','err');$('fNama').focus();return}
+  if(!merek){toast('Merek HP wajib diisi','err');$('fMerek').focus();return}
+
+  const editId=$('fEditId').value?Number($('fEditId').value):null;
+
+  // UUID / IMEI boleh kosong salah satu — bahkan dua-duanya; hanya diingatkan
+  if(!uuid&&!imei){
+    if(!confirm('UUID dan IMEI 1 dua-duanya masih kosong.\n\nTetap simpan datanya?')) return;
+  }
+  // cek duplikat
+  const dup=DATA.find(d=>d.id!==editId&&((uuid&&d.uuid===uuid)||(imei&&d.imei===imei)));
+  if(dup&&!confirm('Nomor ID ini sudah tercatat atas nama "'+dup.nama+'".\n\nTetap simpan?')) return;
+
+  const rec={
+    nama, jabatan, pemakai, jabPemakai, divisi, merek, uuid, imei,
+    tgl:$('fTgl').value||todayStr(),
+    ket:$('fKet').value.trim(),
+    fotos:FOTOS.slice(),
+    dibuat:editId?(DATA.find(d=>d.id===editId)||{}).dibuat||Date.now():Date.now()
+  };
+  if(editId) rec.id=editId;
+  await dbPut(rec);
+  await loadData(); fillDatalist();
+  resetForm();
+  toast(editId?'Data berhasil diperbarui':'Data tersimpan','ok');
+  if(!editId) $('fNama').focus();
+};
+
+function fillDatalist(){
+  const nm=[...new Set(DATA.map(d=>d.nama).filter(Boolean))].sort();
+  const mk=[...new Set(DATA.map(d=>d.merek).filter(Boolean))].sort();
+  const jb=[...new Set(DATA.map(d=>d.jabatan).filter(Boolean))].sort();
+  const pk=[...new Set(DATA.map(d=>d.pemakai).filter(Boolean))].sort();
+  $('dlNama').innerHTML=nm.map(v=>'<option value="'+esc(v)+'">').join('');
+  $('dlMerek').innerHTML=mk.map(v=>'<option value="'+esc(v)+'">').join('');
+  $('dlJabatan').innerHTML=jb.map(v=>'<option value="'+esc(v)+'">').join('');
+  $('dlPemakai').innerHTML=pk.map(v=>'<option value="'+esc(v)+'">').join('');
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+/* ---------- TABEL + PAGINATION ---------- */
+const PER=10;
+let page=getState().page||1;
+let cari='';
+$('fCari').oninput=function(){cari=this.value.trim().toLowerCase();page=1;renderTable()};
+
+function filtered(){
+  if(!cari) return DATA;
+  return DATA.filter(d=>[d.nama,d.jabatan,d.pemakai,d.jabPemakai,d.divisi,d.merek,d.uuid,d.imei,d.ket].join(' ').toLowerCase().includes(cari));
+}
+function renderTable(){
+  const rows=filtered();
+  const totPg=Math.max(1,Math.ceil(rows.length/PER));
+  if(page>totPg) page=totPg;
+  setState({page});
+
+  $('stTotal').textContent=DATA.length;
+  $('stMerek').textContent=new Set(DATA.map(d=>d.merek).filter(Boolean)).size;
+  $('stDivisi').textContent=new Set(DATA.map(d=>d.divisi).filter(Boolean)).size;
+  $('stPemakai').textContent=new Set(DATA.map(d=>d.pemakai).filter(Boolean)).size;
+
+  const host=$('tblHost');
+  if(!rows.length){
+    host.innerHTML='<div class="empty"><span class="ic">📭</span><p>'+
+      (cari?'Tidak ada data yang cocok dengan pencarian.':'Belum ada data. Mulai dari tab Input.')+'</p></div>';
+    $('pager').innerHTML=''; $('pgInfo').textContent='';
+    return;
+  }
+  const slice=rows.slice((page-1)*PER,page*PER);
+  let h='<div class="tbwrap"><table><thead><tr>'+
+    '<th>No</th><th>Tanggal</th><th>Penerima</th><th>Jabatan</th><th>Pemakai</th><th>Jabatan Pemakai</th><th>Divisi</th><th>Merek / Tipe</th><th>UUID</th><th>IMEI 1</th><th>Ket.</th><th>Foto</th><th></th>'+
+    '</tr></thead><tbody>';
+  slice.forEach((d,i)=>{
+    const fs=d.fotos||[];
+    const foto = fs.length
+      ? '<img src="'+fs[0]+'" onclick="viewRec('+d.id+')" title="Lihat foto">'+
+        (fs.length>1?'<span class="cnt">+'+(fs.length-1)+' lagi</span>':'')
+      : '<span style="color:#b0bdb6">—</span>';
+    h+='<tr>'+
+      '<td>'+((page-1)*PER+i+1)+'</td>'+
+      '<td style="white-space:nowrap">'+esc(fmtTgl(d.tgl))+'</td>'+
+      '<td><b>'+esc(d.nama)+'</b></td>'+
+      '<td>'+esc(d.jabatan||'—')+'</td>'+
+      '<td>'+esc(d.pemakai||'—')+'</td>'+
+      '<td>'+esc(d.jabPemakai||'—')+'</td>'+
+      '<td>'+esc(d.divisi||'—')+'</td>'+
+      '<td>'+esc(d.merek)+'</td>'+
+      '<td class="mono">'+esc(d.uuid||'—')+'</td>'+
+      '<td class="mono">'+esc(d.imei||'—')+'</td>'+
+      '<td style="max-width:130px">'+esc(d.ket||'—')+'</td>'+
+      '<td class="thumb">'+foto+'</td>'+
+      '<td class="act"><button onclick="editRec('+d.id+')" title="Edit">✏️</button>'+
+      '<button onclick="delRec('+d.id+')" title="Hapus">🗑️</button></td>'+
+      '</tr>';
+  });
+  h+='</tbody></table></div>';
+  host.innerHTML=h;
+
+  // pager
+  let p='';
+  p+='<button '+(page<=1?'disabled':'')+' onclick="goPage('+(page-1)+')">‹</button>';
+  const win=[];
+  for(let n=1;n<=totPg;n++){
+    if(n===1||n===totPg||Math.abs(n-page)<=1) win.push(n);
+    else if(win[win.length-1]!=='…') win.push('…');
+  }
+  win.forEach(n=>{
+    p+= n==='…' ? '<button disabled>…</button>'
+      : '<button class="'+(n===page?'on':'')+'" onclick="goPage('+n+')">'+n+'</button>';
+  });
+  p+='<button '+(page>=totPg?'disabled':'')+' onclick="goPage('+(page+1)+')">›</button>';
+  $('pager').innerHTML=p;
+  $('pgInfo').textContent='Menampilkan '+((page-1)*PER+1)+'–'+Math.min(page*PER,rows.length)+' dari '+rows.length+' data';
+}
+function goPage(n){page=n;renderTable();window.scrollTo({top:0,behavior:'smooth'})}
+function fmtTgl(s){
+  if(!s) return '—';
+  const p=String(s).split('-');
+  return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : s;
+}
+function viewRec(id){
+  const d=DATA.find(x=>x.id===id); if(!d||!(d.fotos||[]).length) return;
+  openViewer(d.fotos,0,d.nama+(d.jabatan?' ('+d.jabatan+')':'')+' — '+(d.merek||''));
+}
+function editRec(id){
+  const d=DATA.find(x=>x.id===id); if(!d) return;
+  $('fNama').value=d.nama||''; $('fJabatan').value=d.jabatan||'';
+  $('fPemakai').value=d.pemakai||''; $('fJabPemakai').value=d.jabPemakai||'';
+  $('fDivisi').value=d.divisi||''; $('fMerek').value=d.merek||'';
+  $('fUuid').value=d.uuid||''; $('fImei').value=d.imei||'';
+  $('fTgl').value=d.tgl||todayStr(); $('fKet').value=d.ket||'';
+  FOTOS=(d.fotos||[]).slice(); renderFotoGrid();
+  $('fEditId').value=d.id;
+  $('btnSimpan').innerHTML='<span>✓</span>Perbarui Data';
+  showTab('input');
+  toast('Mode edit: '+d.nama);
+}
+async function delRec(id){
+  const d=DATA.find(x=>x.id===id); if(!d) return;
+  if(!confirm('Hapus data "'+d.nama+'" ('+(d.merek||'')+')?')) return;
+  await dbDel(id); await loadData(); fillDatalist(); renderTable();
+  toast('Data dihapus','ok');
+}
+
+/* =========================================================
+   OCR  —  baca UUID langsung dari kotak panduan
+   Satu ketukan: jepret resolusi penuh → ambil isi kotak → baca
+   Layar crop hanya muncul kalau hasilnya meragukan
+   ========================================================= */
+let stream=null, ocrWorker=null, ocrSiap=null, torchOn=false, track=null, imgCap=null;
+let SHOT=null;                              // kanvas jepretan resolusi penuh
+let VDIM={w:0,h:0};                         // ukuran frame video saat menjepret
+let VIEW={scale:1,tx:0,ty:0};               // posisi gambar di kanvas crop
+const CROP={x:0.06,y:0.40,w:0.88,h:0.20};   // kotak panduan (rasio)
+const MARGIN=0.06;                          // kelonggaran peta kotak → foto
+
+function showStep(n){
+  $('step1').style.display = n===1?'block':'none';
+  $('step2').style.display = n===2?'block':'none';
+  $('ocrTitle').textContent = n===1 ? '📷 Baca UUID' : '✂️ Atur Posisi Teks';
+}
+
+/* ---------- buka / tutup kamera ---------- */
+async function openCam(){
+  $('mdOcr').classList.add('on');
+  setStat('');
+  $('prevWrap').classList.remove('on');
+  SHOT=null; showStep(1);
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:'environment'},
+             width:{ideal:4096},height:{ideal:2160}}
+    });
+    $('vid').srcObject=stream;
+    await $('vid').play();
+    track=stream.getVideoTracks()[0];
+    try{ imgCap=('ImageCapture' in window)? new ImageCapture(track):null; }catch(e){ imgCap=null; }
+    siapkanZoom();
+    pastikanWorker().catch(()=>{});   // siapkan mesin OCR sambil pengguna membidik
+  }catch(e){
+    setStat('Kamera tidak bisa dibuka: '+e.message+'. Pastikan halaman dibuka lewat HTTPS dan izin kamera diberikan.',true);
+  }
+}
+function closeCam(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  track=null; imgCap=null; torchOn=false; SHOT=null;
+  $('mdOcr').classList.remove('on');
+}
+$('btnOcr').onclick=openCam;
+$('closeOcr').onclick=closeCam;
+$('mdOcr').onclick=e=>{if(e.target===$('mdOcr'))closeCam()};
+
+/* ---------- zoom & senter ---------- */
+function siapkanZoom(){
+  const cap = track && track.getCapabilities ? track.getCapabilities() : {};
+  if(!cap.zoom){ $('zoomRow').style.display='none'; return; }
+  const sl=$('zoomSl');
+  sl.min=cap.zoom.min; sl.max=cap.zoom.max; sl.step=cap.zoom.step||0.1;
+  const now=(track.getSettings().zoom)||cap.zoom.min;
+  sl.value=now; $('zoomVal').textContent=Number(now).toFixed(1)+'×';
+  $('zoomRow').style.display='flex';
+  sl.oninput=async function(){
+    $('zoomVal').textContent=Number(this.value).toFixed(1)+'×';
+    try{ await track.applyConstraints({advanced:[{zoom:Number(this.value)}]}); }catch(e){}
+  };
+}
+$('btnTorch').onclick=async function(){
+  if(!track) return;
+  const cap=track.getCapabilities?track.getCapabilities():{};
+  if(!cap.torch){toast('HP ini tidak mendukung senter kamera','err');return}
+  torchOn=!torchOn;
+  try{ await track.applyConstraints({advanced:[{torch:torchOn}]}); this.style.background=torchOn?'#ffe082':''; }
+  catch(e){ toast('Gagal menyalakan senter','err') }
+};
+
+function setStat(msg,isErr){
+  const s=$('ocrStat');
+  if(!msg){ s.className=''; s.textContent=''; return; }
+  s.textContent=msg;
+  s.className='on'+(isErr?' err':'');
+}
+
+/* ---------- ambil foto resolusi penuh ---------- */
+async function keKanvas(src){
+  const cv=document.createElement('canvas');
+  const cx=cv.getContext('2d');
+  if(src instanceof Blob){
+    const bmp=await createImageBitmap(src);
+    cv.width=bmp.width; cv.height=bmp.height; cx.drawImage(bmp,0,0);
+    if(bmp.close) bmp.close();
+  }else if(src && src.width){
+    cv.width=src.width; cv.height=src.height; cx.drawImage(src,0,0);
+  }else{
+    const v=$('vid');
+    cv.width=v.videoWidth; cv.height=v.videoHeight; cx.drawImage(v,0,0);
+  }
+  return cv;
+}
+async function jepret(){
+  let hasil=null;
+  try{
+    if(imgCap && imgCap.takePhoto){
+      let opt={};
+      try{
+        const pc=await imgCap.getPhotoCapabilities();
+        if(pc && pc.imageWidth  && pc.imageWidth.max)  opt.imageWidth =pc.imageWidth.max;
+        if(pc && pc.imageHeight && pc.imageHeight.max) opt.imageHeight=pc.imageHeight.max;
+      }catch(e){}
+      hasil=await imgCap.takePhoto(opt);
+    }
+  }catch(e){ hasil=null; }
+  if(!hasil && imgCap && imgCap.grabFrame){
+    try{ hasil=await imgCap.grabFrame(); }catch(e){}
+  }
+  VDIM={w:$('vid').videoWidth, h:$('vid').videoHeight};
+  return keKanvas(hasil);
+}
+
+/* ---------- peta kotak panduan (koordinat video) → koordinat foto ----------
+   Foto sensor sering beda rasio dengan aliran video (4:3 vs 16:9).
+   Keduanya berpusat sama, jadi sisi yang rasionya lebih sempit = bidang penuh. */
+function rectDariKotak(){
+  const vw=VDIM.w||SHOT.width, vh=VDIM.h||SHOT.height;
+  const pw=SHOT.width, ph=SHOT.height;
+  const va=vw/vh, pa=pw/ph;
+  let sc, offX=0, offY=0;
+  if(pa>va){ sc=ph/vh; offX=(pw-vw*sc)/2; }   // foto lebih lebar → tinggi sama
+  else     { sc=pw/vw; offY=(ph-vh*sc)/2; }   // foto lebih tinggi → lebar sama
+
+  let rx=CROP.x*vw, ry=CROP.y*vh, rw=CROP.w*vw, rh=CROP.h*vh;
+  // longgarkan sedikit supaya selisih bidang pandang tidak memotong huruf
+  const mx=rw*MARGIN, my=rh*MARGIN;
+  rx-=mx; ry-=my; rw+=mx*2; rh+=my*2;
+
+  return {
+    sx: offX + rx*sc,
+    sy: offY + ry*sc,
+    sw: rw*sc,
+    sh: rh*sc
+  };
+}
+function rectDariCrop(){
+  const cx0=CROP.x*CW, cy0=CROP.y*CH, cw0=CROP.w*CW, ch0=CROP.h*CH;
+  return {
+    sx:(cx0-VIEW.tx)/VIEW.scale, sy:(cy0-VIEW.ty)/VIEW.scale,
+    sw:cw0/VIEW.scale,           sh:ch0/VIEW.scale
+  };
+}
+
+/* ---------- pra-proses: redam moiré + ambang Sauvola ---------- */
+function blurSep(g,w,h){
+  const t=new Float32Array(w*h), o=new Float32Array(w*h);
+  for(let y=0;y<h;y++){
+    const b=y*w;
+    for(let x=0;x<w;x++){
+      let s=0,c=0;
+      for(let d=-1;d<=1;d++){const xx=x+d; if(xx<0||xx>=w) continue; s+=g[b+xx]; c++;}
+      t[b+x]=s/c;
+    }
+  }
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      let s=0,c=0;
+      for(let d=-1;d<=1;d++){const yy=y+d; if(yy<0||yy>=h) continue; s+=t[yy*w+x]; c++;}
+      o[y*w+x]=s/c;
+    }
+  }
+  return o;
+}
+function sauvola(g,w,h,win,k,R){
+  const W1=w+1;
+  const I=new Float64Array(W1*(h+1)), I2=new Float64Array(W1*(h+1));
+  for(let y=0;y<h;y++){
+    let s=0,s2=0;
+    for(let x=0;x<w;x++){
+      const v=g[y*w+x];
+      s+=v; s2+=v*v;
+      I [(y+1)*W1+(x+1)] = I [y*W1+(x+1)] + s;
+      I2[(y+1)*W1+(x+1)] = I2[y*W1+(x+1)] + s2;
+    }
+  }
+  const r=win>>1, out=new Uint8Array(w*h);
+  for(let y=0;y<h;y++){
+    const y0=Math.max(0,y-r), y1=Math.min(h-1,y+r);
+    for(let x=0;x<w;x++){
+      const x0=Math.max(0,x-r), x1=Math.min(w-1,x+r);
+      const area=(y1-y0+1)*(x1-x0+1);
+      const sum =I [(y1+1)*W1+(x1+1)]-I [y0*W1+(x1+1)]-I [(y1+1)*W1+x0]+I [y0*W1+x0];
+      const sum2=I2[(y1+1)*W1+(x1+1)]-I2[y0*W1+(x1+1)]-I2[(y1+1)*W1+x0]+I2[y0*W1+x0];
+      const m=sum/area;
+      const sd=Math.sqrt(Math.max(0,sum2/area-m*m));
+      out[y*w+x]=(g[y*w+x] < m*(1+k*(sd/R-1)))?0:255;
+    }
+  }
+  return out;
+}
+function bersihkanBintik(b,w,h){
+  const o=new Uint8Array(w*h);
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      let hitam=0,c=0;
+      for(let dy=-1;dy<=1;dy++){
+        const yy=y+dy; if(yy<0||yy>=h) continue;
+        for(let dx=-1;dx<=1;dx++){
+          const xx=x+dx; if(xx<0||xx>=w) continue;
+          c++; if(b[yy*w+xx]===0) hitam++;
+        }
+      }
+      o[y*w+x]=(hitam*2>c)?0:255;
+    }
+  }
+  return o;
+}
+
+function prosesRect(R){
+  let {sx,sy,sw,sh}=R;
+  sx=Math.max(0,Math.min(SHOT.width -1,sx));
+  sy=Math.max(0,Math.min(SHOT.height-1,sy));
+  sw=Math.max(8,Math.min(SHOT.width -sx,sw));
+  sh=Math.max(8,Math.min(SHOT.height-sy,sh));
+
+  let sc=Math.max(1,Math.min(6,190/sh));
+  let ow=Math.round(sw*sc), oh=Math.round(sh*sc);
+  if(ow>3200){ sc=3200/sw; ow=3200; oh=Math.round(sh*sc); }
+
+  const tmp=document.createElement('canvas');
+  tmp.width=ow; tmp.height=oh;
+  const tc=tmp.getContext('2d',{willReadFrequently:true});
+  tc.imageSmoothingEnabled=true; tc.imageSmoothingQuality='high';
+  tc.drawImage(SHOT,sx,sy,sw,sh,0,0,ow,oh);
+
+  const im=tc.getImageData(0,0,ow,oh), d=im.data, n=ow*oh;
+  const g=new Float32Array(n);
+  for(let i=0,j=0;i<n;i++,j+=4) g[i]=d[j]*0.299+d[j+1]*0.587+d[j+2]*0.114;
+
+  const b=blurSep(blurSep(g,ow,oh),ow,oh);
+  const win=Math.max(15,(Math.round(oh*0.5)|1));
+  let bin=bersihkanBintik(sauvola(b,ow,oh,win,0.25,128),ow,oh);
+
+  let hitam=0; for(let i=0;i<n;i++) if(bin[i]===0) hitam++;
+  const balik = hitam > n*0.55;
+
+  const M=22;
+  const cv=document.createElement('canvas');
+  cv.width=ow+M*2; cv.height=oh+M*2;
+  const ctx=cv.getContext('2d',{willReadFrequently:true});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cv.width,cv.height);
+  const im2=ctx.createImageData(ow,oh), d2=im2.data;
+  for(let i=0,j=0;i<n;i++,j+=4){
+    const v = balik ? 255-bin[i] : bin[i];
+    d2[j]=d2[j+1]=d2[j+2]=v; d2[j+3]=255;
+  }
+  ctx.putImageData(im2,M,M);
+  return cv;
+}
+
+/* ---------- mesin OCR ---------- */
+async function pastikanWorker(){
+  if(ocrWorker) return ocrWorker;
+  if(!ocrSiap){
+    ocrSiap=Tesseract.createWorker('eng',1,{
+      logger:m=>{ if(m.status==='recognizing text') setStat('Membaca teks... '+Math.round(m.progress*100)+'%'); }
+    }).then(w=>{ ocrWorker=w; return w; });
+  }
+  return ocrSiap;
+}
+async function bacaKanvas(cv){
+  await pastikanWorker();
+  const mode=[['7','satu baris'],['6','blok teks'],['11','teks tersebar']];
+  let best={t:'',c:-1,m:''};
+  for(const [psm,nama] of mode){
+    setStat('Membaca teks ('+nama+')...');
+    await ocrWorker.setParameters({tessedit_pageseg_mode:psm,user_defined_dpi:'300'});
+    const {data}=await ocrWorker.recognize(cv);
+    const t=(data.text||'').replace(/\s+/g,' ').trim();
+    const c=data.confidence||0;
+    if(t && c>best.c) best={t,c,m:nama};
+    if(t && c>=75) break;
+  }
+  return best;
+}
+function tampilkanPratinjau(cv){
+  const pc=$('prevCv'), pctx=pc.getContext('2d');
+  pc.width=cv.width; pc.height=cv.height; pctx.drawImage(cv,0,0);
+  $('prevWrap').classList.add('on');
+}
+function terapkanHasil(best){
+  if(!best.t) return false;
+  const yakin=Math.round(best.c);
+  $('fUuid').value=best.t;
+  setStat('Terbaca ('+yakin+'% yakin): '+best.t+'  —  periksa & edit bila perlu.', yakin<60);
+  toast('Teks masuk ke kolom UUID','ok');
+  return yakin>=60;
+}
+
+/* ---------- SATU KETUKAN: baca isi kotak panduan ---------- */
+$('btnJepret').onclick=async function(){
+  if(!stream){toast('Kamera belum aktif','err');return}
+  this.disabled=true;
+  try{
+    setStat('Mengambil gambar...');
+    SHOT=await jepret();
+    const cv=prosesRect(rectDariKotak());
+    tampilkanPratinjau(cv);
+    if(!ocrWorker) setStat('Menyiapkan mesin OCR (sekali saja, butuh internet)...');
+    const best=await bacaKanvas(cv);
+    if(terapkanHasil(best)){
+      setTimeout(closeCam,1200);
+    }else{
+      // hasil meragukan → buka pengaturan posisi dengan foto yang sudah ada
+      if(!best.t) setStat('Teks belum terbaca. Atur posisinya di bawah, lalu tekan Baca Ulang.',true);
+      showStep(2);
+      pasangKanvasCrop();
+    }
+  }catch(e){
+    setStat('Gagal memproses: '+e.message,true);
+  }finally{ this.disabled=false; }
+};
+
+/* ---------- cadangan: atur posisi manual lalu baca ulang ---------- */
+$('btnBaca').onclick=async function(){
+  if(!SHOT){toast('Belum ada gambar','err');return}
+  this.disabled=true;
+  try{
+    const cv=prosesRect(rectDariCrop());
+    tampilkanPratinjau(cv);
+    const best=await bacaKanvas(cv);
+    if(!best.t) setStat('Masih belum terbaca. Perbesar lagi, atau hindari bezel hitam ikut masuk kotak.',true);
+    else if(terapkanHasil(best)) setTimeout(closeCam,1200);
+  }catch(e){
+    setStat('Gagal memproses: '+e.message,true);
+  }finally{ this.disabled=false; }
+};
+$('btnUlang').onclick=function(){
+  SHOT=null; showStep(1); setStat('');
+  $('prevWrap').classList.remove('on');
+};
+
+/* ---------- kanvas crop: geser & cubit-zoom ---------- */
+let CW=0, CH=0;
+function pasangKanvasCrop(){
+  const wrap=$('cropWrap'), cv=$('cropCv');
+  CW=wrap.clientWidth||340; CH=Math.round(CW*0.78);
+  cv.width=CW; cv.height=CH;
+  wrap.style.height=CH+'px';
+  const f=$('cropFrame');
+  f.style.left=(CROP.x*100)+'%'; f.style.top=(CROP.y*100)+'%';
+  f.style.width=(CROP.w*100)+'%'; f.style.height=(CROP.h*100)+'%';
+  // buka pada posisi kotak panduan tadi, tidak dari nol
+  const R=rectDariKotak();
+  const sc=Math.min(CW/Math.max(1,R.sw), CH/Math.max(1,R.sh)) * CROP.w;
+  VIEW.scale=Math.max(sc, Math.min(CW/SHOT.width, CH/SHOT.height));
+  VIEW.tx = CROP.x*CW - R.sx*VIEW.scale;
+  VIEW.ty = CROP.y*CH - R.sy*VIEW.scale;
+  gambarCrop();
+}
+function gambarCrop(){
+  const cv=$('cropCv'), cx=cv.getContext('2d');
+  cx.fillStyle='#10201a'; cx.fillRect(0,0,CW,CH);
+  cx.imageSmoothingQuality='high';
+  cx.drawImage(SHOT, VIEW.tx, VIEW.ty, SHOT.width*VIEW.scale, SHOT.height*VIEW.scale);
+}
+function zoomDi(cx,cy,faktor){
+  const min=Math.min(CW/SHOT.width, CH/SHOT.height)*0.5, max=20;
+  const baru=Math.max(min,Math.min(max,VIEW.scale*faktor));
+  const r=baru/VIEW.scale;
+  VIEW.tx = cx - (cx-VIEW.tx)*r;
+  VIEW.ty = cy - (cy-VIEW.ty)*r;
+  VIEW.scale = baru;
+  gambarCrop();
+}
+(function(){
+  const wrap=$('cropWrap');
+  let mode=0, lx=0, ly=0, ld=0, mx=0, my=0;
+  const pos=t=>{const r=wrap.getBoundingClientRect();return{x:t.clientX-r.left,y:t.clientY-r.top}};
+  wrap.addEventListener('touchstart',e=>{
+    if(!SHOT) return;
+    e.preventDefault();
+    if(e.touches.length===1){ mode=1; const p=pos(e.touches[0]); lx=p.x; ly=p.y; }
+    else if(e.touches.length>=2){
+      mode=2;
+      const a=pos(e.touches[0]), b=pos(e.touches[1]);
+      ld=Math.hypot(a.x-b.x,a.y-b.y); mx=(a.x+b.x)/2; my=(a.y+b.y)/2;
+    }
+  },{passive:false});
+  wrap.addEventListener('touchmove',e=>{
+    if(!SHOT||!mode) return;
+    e.preventDefault();
+    if(mode===1&&e.touches.length===1){
+      const p=pos(e.touches[0]);
+      VIEW.tx+=p.x-lx; VIEW.ty+=p.y-ly; lx=p.x; ly=p.y; gambarCrop();
+    }else if(mode===2&&e.touches.length>=2){
+      const a=pos(e.touches[0]), b=pos(e.touches[1]);
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(ld>0) zoomDi(mx,my,d/ld);
+      ld=d; mx=(a.x+b.x)/2; my=(a.y+b.y)/2;
+    }
+  },{passive:false});
+  wrap.addEventListener('touchend',()=>{mode=0;ld=0},{passive:true});
+  wrap.addEventListener('wheel',e=>{
+    if(!SHOT) return; e.preventDefault();
+    const p=pos(e); zoomDi(p.x,p.y, e.deltaY<0?1.12:1/1.12);
+  },{passive:false});
+})();
+$('btnZin').onclick =()=>{ if(SHOT) zoomDi(CW/2,CH*(CROP.y+CROP.h/2),1.3) };
+$('btnZout').onclick=()=>{ if(SHOT) zoomDi(CW/2,CH*(CROP.y+CROP.h/2),1/1.3) };
+
+/* ---------- tombol perbaiki hex (manual, tidak otomatis) ---------- */
+const PETA_HEX={'o':'0','O':'0','Q':'0','D':'0','l':'1','I':'1','i':'1','|':'1','!':'1',
+                'S':'5','s':'5','Z':'2','z':'2','B':'8','g':'9','q':'9','t':'7','T':'7',
+                'G':'6','A':'4','$':'5','&':'8'};
+$('btnHex').onclick=function(){
+  const asal=$('fUuid').value;
+  if(!asal.trim()){toast('Kolom UUID masih kosong','err');return}
+  const potong=asal.split(/(\s+)/);
+  let idx=-1, pjg=0;
+  potong.forEach((p,i)=>{ const bersih=p.replace(/[^A-Za-z0-9|!$&]/g,''); if(bersih.length>pjg){pjg=bersih.length;idx=i} });
+  if(idx<0||pjg<6){toast('Tidak ada bagian kode yang cukup panjang','err');return}
+  potong[idx]=potong[idx].split('').map(c=>{
+    if(/[0-9a-f]/.test(c)) return c;
+    if(/[A-F]/.test(c)) return c.toLowerCase();
+    return PETA_HEX[c]!==undefined ? PETA_HEX[c] : c;
+  }).join('');
+  $('fUuid').value=potong.join('');
+  toast('Kode dirapikan ke format hex','ok');
+};
+
+/* =========================================================
+   SCANNER  —  QR + barcode 1D
+   ========================================================= */
+let qr=null;
+$('btnScan').onclick=async function(){
+  $('mdScan').classList.add('on');
+  const F=Html5QrcodeSupportedFormats;
+  try{
+    qr=new Html5Qrcode('qrbox',{
+      formatsToSupport:[F.QR_CODE,F.CODE_128,F.CODE_39,F.CODE_93,F.EAN_13,F.EAN_8,
+                        F.UPC_A,F.UPC_E,F.ITF,F.CODABAR,F.DATA_MATRIX,F.PDF_417],
+      verbose:false
+    });
+    await qr.start(
+      {facingMode:'environment'},
+      {fps:12,qrbox:{width:290,height:170},aspectRatio:1.4},
+      txt=>{
+        $('fImei').value=String(txt).trim();
+        toast('Kode terbaca','ok');
+        closeScan();
+      },
+      ()=>{}
+    );
+  }catch(e){
+    closeScan();
+    toast('Kamera gagal dibuka — pastikan halaman via HTTPS','err');
+  }
+};
+async function closeScan(){
+  if(qr){ try{await qr.stop(); qr.clear();}catch(e){} qr=null; }
+  $('mdScan').classList.remove('on');
+}
+$('closeScan').onclick=closeScan;
+$('mdScan').onclick=e=>{if(e.target===$('mdScan'))closeScan()};
+
+/* =========================================================
+   EXPORT EXCEL  (ExcelJS, berformat + berumus)
+   ========================================================= */
+$('btnExcel').onclick=async function(){
+  if(!DATA.length){toast('Belum ada data untuk diexport','err');return}
+  this.disabled=true; this.innerHTML='<span>⏳</span>Menyiapkan...';
+  try{
+    const wb=new ExcelJS.Workbook();
+    wb.creator='Inventaris HP & Gadget V1.8-2026';
+    wb.created=new Date();
+
+    /* --- Sheet 1: DATA --- */
+    const ws=wb.addWorksheet('Data',{views:[{state:'frozen',ySplit:4}]});
+    ws.columns=[
+      {key:'no',width:5},{key:'tgl',width:12},{key:'nama',width:22},
+      {key:'jabatan',width:18},{key:'pemakai',width:22},{key:'jabPemakai',width:17},
+      {key:'divisi',width:11},{key:'merek',width:22},{key:'uuid',width:28},
+      {key:'imei',width:18},{key:'ket',width:20},
+      {key:'foto1',width:13},{key:'foto2',width:13},{key:'foto3',width:13}
+    ];
+    ws.mergeCells('A1:N1');
+    const t1=ws.getCell('A1');
+    t1.value='DAFTAR INVENTARIS HP & GADGET';
+    t1.font={bold:true,size:14,color:{argb:'FF1B5E20'}};
+    t1.alignment={horizontal:'center',vertical:'middle'};
+    ws.getRow(1).height=26;
+    ws.mergeCells('A2:N2');
+    const t2=ws.getCell('A2');
+    t2.value='Dicetak: '+new Date().toLocaleString('id-ID');
+    t2.font={italic:true,size:9,color:{argb:'FF6B7A72'}};
+    t2.alignment={horizontal:'center'};
+
+    const hdr=ws.getRow(4);
+    hdr.values=['No','Tanggal','Nama Penerima','Jabatan','Nama Pemakai','Jabatan Pemakai','Divisi',
+                'Merek / Tipe HP','UUID','IMEI 1','Keterangan',
+                'Foto 1','Foto 2','Foto 3'];
+    hdr.height=22;
+    hdr.eachCell(c=>{
+      c.font={bold:true,color:{argb:'FFFFFFFF'},size:10.5};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF2E7D32'}};
+      c.alignment={horizontal:'center',vertical:'middle'};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+    });
+
+    const asc=[...DATA].sort((a,b)=>(a.id||0)-(b.id||0));
+    asc.forEach((d,i)=>{
+      const fs=d.fotos||[];
+      const r=ws.addRow([i+1,d.tgl||'',d.nama||'',d.jabatan||'',d.pemakai||'',d.jabPemakai||'',
+                         d.divisi||'',d.merek||'',d.uuid||'',d.imei||'',d.ket||'',
+                         fs[0]?'':'—', fs[1]?'':'—', fs[2]?'':'—']);
+      const rowNo=r.number;
+      r.height=fs.length?48:18;
+      r.eachCell((c,ci)=>{
+        c.border={top:{style:'hair'},left:{style:'hair'},bottom:{style:'hair'},right:{style:'hair'}};
+        c.alignment={vertical:'middle',wrapText:ci===11};
+        if(i%2===1) c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF3F8F4'}};
+        if(ci===1||ci===2||ci===7) c.alignment={horizontal:'center',vertical:'middle'};
+        if(ci===9||ci===10){ c.font={name:'Consolas',size:10}; }
+        if(ci>=12){
+          c.alignment={horizontal:'center',vertical:'middle'};
+          if(c.value==='—') c.font={italic:true,size:9,color:{argb:'FFA0ACA6'}};
+        }
+      });
+      // tandai kuning kalau salah satu ID kosong
+      [9,10].forEach(ci=>{
+        if(!r.getCell(ci).value) r.getCell(ci).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFFFF3CD'}};
+      });
+      // tanam setiap foto ke kolomnya sendiri (L, M, N)
+      fs.slice(0,3).forEach((src,k)=>{
+        try{
+          const imgId=wb.addImage({base64:src.split(',')[1],extension:'jpeg'});
+          ws.addImage(imgId,{
+            tl:{col:11.12+k,row:rowNo-1+0.08},
+            ext:{width:56,height:56},
+            editAs:'oneCell'
+          });
+        }catch(e){ r.getCell(12+k).value='(gagal)'; }
+      });
+    });
+    const last=4+asc.length;
+    ws.autoFilter={from:{row:4,column:1},to:{row:last,column:14}};
+
+    /* --- Sheet 2: REKAP (rumus native) --- */
+    const rs=wb.addWorksheet('Rekap');
+    rs.columns=[{key:'a',width:30},{key:'b',width:16},{key:'c',width:16}];
+    rs.mergeCells('A1:C1');
+    const r1=rs.getCell('A1');
+    r1.value='REKAPITULASI';
+    r1.font={bold:true,size:13,color:{argb:'FF1B5E20'}};
+    r1.alignment={horizontal:'center'};
+    rs.getRow(1).height=24;
+
+    rs.getCell('A3').value='Total unit tercatat';
+    rs.getCell('B3').value={formula:'COUNTA(Data!C5:C'+last+')'};
+    rs.getCell('A4').value='Unit dengan UUID terisi';
+    rs.getCell('B4').value={formula:'COUNTA(Data!I5:I'+last+')'};
+    rs.getCell('A5').value='Unit dengan IMEI 1 terisi';
+    rs.getCell('B5').value={formula:'COUNTA(Data!J5:J'+last+')'};
+    rs.getCell('A6').value='Unit berfoto serah terima';
+    rs.getCell('B6').value={formula:'B3-COUNTIF(Data!L5:L'+last+',"—")'};
+    rs.getCell('A7').value='Jumlah foto tersimpan';
+    rs.getCell('B7').value={formula:'B3*3-COUNTIF(Data!L5:N'+last+',"—")'};
+    rs.getCell('A8').value='Isian nomor ID yang kosong';
+    rs.getCell('B8').value={formula:'B3*2-B4-B5'};
+    ['A3','A4','A5','A6','A7','A8'].forEach(k=>rs.getCell(k).font={size:11});
+    ['B3','B4','B5','B6','B7','B8'].forEach(k=>{
+      const c=rs.getCell(k);
+      c.font={bold:true,size:11,color:{argb:'FF1B5E20'}};
+      c.alignment={horizontal:'center'};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFE8F5E9'}};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+    });
+
+    // rekap per merek — pakai COUNTIF supaya tetap hidup saat data diedit
+    const hr=rs.getRow(9);
+    hr.values=['Merek / Tipe HP','Jumlah Unit','% dari Total'];
+    hr.eachCell(c=>{
+      c.font={bold:true,color:{argb:'FFFFFFFF'},size:10.5};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF2E7D32'}};
+      c.alignment={horizontal:'center'};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+    });
+    const mereks=[...new Set(asc.map(d=>d.merek).filter(Boolean))].sort();
+    mereks.forEach((m,i)=>{
+      const rn=10+i;
+      const r=rs.getRow(rn);
+      r.getCell(1).value=m;
+      r.getCell(2).value={formula:'COUNTIF(Data!$H$5:$H$'+last+',A'+rn+')'};
+      r.getCell(3).value={formula:'IF($B$3=0,0,B'+rn+'/$B$3)'};
+      r.getCell(3).numFmt='0.0%';
+      r.eachCell((c,ci)=>{
+        c.border={top:{style:'hair'},left:{style:'hair'},bottom:{style:'hair'},right:{style:'hair'}};
+        if(ci>1) c.alignment={horizontal:'center'};
+        if(i%2===1) c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF3F8F4'}};
+      });
+    });
+    // rekap per jabatan di kolom E–F
+    rs.getColumn(5).width=26; rs.getColumn(6).width=14;
+    const jh=rs.getRow(9);
+    jh.getCell(5).value='Jabatan Pemakai'; jh.getCell(6).value='Jumlah Unit';
+    [5,6].forEach(ci=>{
+      const c=jh.getCell(ci);
+      c.font={bold:true,color:{argb:'FFFFFFFF'},size:10.5};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF2E7D32'}};
+      c.alignment={horizontal:'center'};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+    });
+    const URUT=['Manager','KTU','Askep','Asisten','Mandor Panen','Kerani Panen'];
+    const jabs=[...new Set(asc.map(d=>d.jabPemakai).filter(Boolean))]
+                 .sort((a,b)=>{const x=URUT.indexOf(a),y=URUT.indexOf(b);
+                               return (x<0?99:x)-(y<0?99:y)||a.localeCompare(b)});
+    jabs.forEach((j,i)=>{
+      const rn=10+i, r=rs.getRow(rn);
+      r.getCell(5).value=j;
+      r.getCell(6).value={formula:'COUNTIF(Data!$F$5:$F$'+last+',E'+rn+')'};
+      [5,6].forEach(ci=>{
+        const c=r.getCell(ci);
+        c.border={top:{style:'hair'},left:{style:'hair'},bottom:{style:'hair'},right:{style:'hair'}};
+        if(ci===6) c.alignment={horizontal:'center'};
+        if(i%2===1) c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF3F8F4'}};
+      });
+    });
+    if(jabs.length){
+      const jt=rs.getRow(10+jabs.length);
+      jt.getCell(5).value='TOTAL';
+      jt.getCell(6).value={formula:'SUM(F10:F'+(9+jabs.length)+')'};
+      [5,6].forEach(ci=>{
+        const c=jt.getCell(ci);
+        c.font={bold:true,color:{argb:'FF1B5E20'}};
+        c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFC8E6C9'}};
+        c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+        if(ci===6) c.alignment={horizontal:'center'};
+      });
+    }
+
+    // rekap per divisi di kolom H–I
+    rs.getColumn(8).width=16; rs.getColumn(9).width=14;
+    const dh=rs.getRow(9);
+    dh.getCell(8).value='Divisi'; dh.getCell(9).value='Jumlah Unit';
+    [8,9].forEach(ci=>{
+      const c=dh.getCell(ci);
+      c.font={bold:true,color:{argb:'FFFFFFFF'},size:10.5};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF2E7D32'}};
+      c.alignment={horizontal:'center'};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+    });
+    const divs=['Divisi 1','Divisi 2','Divisi 3','Divisi 4','Divisi 5'];
+    divs.forEach((v,i)=>{
+      const rn=10+i, r=rs.getRow(rn);
+      r.getCell(8).value=v;
+      r.getCell(9).value={formula:'COUNTIF(Data!$G$5:$G$'+last+',H'+rn+')'};
+      [8,9].forEach(ci=>{
+        const c=r.getCell(ci);
+        c.border={top:{style:'hair'},left:{style:'hair'},bottom:{style:'hair'},right:{style:'hair'}};
+        if(ci===9) c.alignment={horizontal:'center'};
+        if(i%2===1) c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF3F8F4'}};
+      });
+    });
+    const dt=rs.getRow(10+divs.length);
+    dt.getCell(8).value='TOTAL';
+    dt.getCell(9).value={formula:'SUM(I10:I'+(9+divs.length)+')'};
+    [8,9].forEach(ci=>{
+      const c=dt.getCell(ci);
+      c.font={bold:true,color:{argb:'FF1B5E20'}};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFC8E6C9'}};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+      if(ci===9) c.alignment={horizontal:'center'};
+    });
+
+    const tr=rs.getRow(10+mereks.length);
+    tr.getCell(1).value='TOTAL';
+    tr.getCell(2).value={formula:'SUM(B10:B'+(9+mereks.length)+')'};
+    tr.getCell(3).value={formula:'SUM(C10:C'+(9+mereks.length)+')'};
+    tr.getCell(3).numFmt='0.0%';
+    tr.eachCell((c,ci)=>{
+      c.font={bold:true,color:{argb:'FF1B5E20'}};
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFC8E6C9'}};
+      c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};
+      if(ci>1) c.alignment={horizontal:'center'};
+    });
+
+    const buf=await wb.xlsx.writeBuffer();
+    dl(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),
+       'Inventaris_HP_Gadget_'+stamp()+'.xlsx');
+    toast('File Excel berhasil dibuat','ok');
+  }catch(e){
+    toast('Gagal export: '+e.message,'err');
+  }finally{
+    this.disabled=false; this.innerHTML='<span>📊</span>Export ke Excel';
+  }
+};
+
+function stamp(){
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes());
+}
+function dl(blob,name){
+  const u=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},900);
+}
+
+/* =========================================================
+   BACKUP / RESTORE
+   ========================================================= */
+$('btnBackup').onclick=function(){
+  if(!DATA.length){toast('Belum ada data','err');return}
+  const pack={app:'InventarisHPGadget',versi:'V1.8-2026',tanggal:new Date().toISOString(),jumlah:DATA.length,data:DATA};
+  const blob=new Blob([JSON.stringify(pack)],{type:'application/json'});
+  dl(blob,'Backup_InventarisHP_'+stamp()+'.json');
+  toast('Backup tersimpan ('+DATA.length+' data, '+(blob.size/1048576).toFixed(1)+' MB)','ok');
+};
+$('btnRestore').onclick=()=>$('fileRestore').click();
+$('fileRestore').onchange=async function(){
+  const f=this.files[0]; if(!f) return;
+  try{
+    const p=JSON.parse(await f.text());
+    const arr=Array.isArray(p)?p:(p.data||[]);
+    if(!arr.length){toast('File backup kosong','err');return}
+    const mode=confirm('Ditemukan '+arr.length+' data.\n\nOK = TAMBAHKAN ke data yang ada\nBatal = GANTI seluruh data');
+    if(!mode) await dbClear();
+    for(const d of arr){
+      const o={nama:d.nama||'',jabatan:d.jabatan||'',pemakai:d.pemakai||'',
+               jabPemakai:d.jabPemakai||'',divisi:d.divisi||'',
+               merek:d.merek||'',uuid:d.uuid||'',imei:d.imei||'',
+               tgl:d.tgl||todayStr(),ket:d.ket||'',
+               fotos:Array.isArray(d.fotos)?d.fotos:[],
+               dibuat:d.dibuat||Date.now()};
+      if(!mode&&d.id) o.id=d.id;
+      await dbPut(o);
+    }
+    await loadData(); fillDatalist(); renderTable();
+    toast(arr.length+' data berhasil dipulihkan','ok');
+  }catch(e){ toast('File tidak valid: '+e.message,'err') }
+  this.value='';
+};
+$('btnHapusAll').onclick=async function(){
+  if(!DATA.length){toast('Tidak ada data','err');return}
+  if(!confirm('Hapus SEMUA '+DATA.length+' data secara permanen?')) return;
+  if(!confirm('Sekali lagi — data tidak bisa dikembalikan kecuali punya file backup.\n\nLanjutkan?')) return;
+  await dbClear(); await loadData(); fillDatalist(); renderTable();
+  toast('Seluruh data dihapus','ok');
+};
+
+/* ---------- UJI PERANGKAT ---------- */
+$('btnCek').onclick=async function(){
+  const h=$('cekHasil'); const L=[];
+  const ok=t=>'<div style="color:#2e7d32">✅ '+t+'</div>';
+  const no=t=>'<div style="color:#c62828">❌ '+t+'</div>';
+  L.push(location.protocol==='https:'||location.hostname==='localhost'
+    ? ok('Halaman berjalan di konteks aman ('+location.protocol+')')
+    : no('Bukan HTTPS ('+location.protocol+') — kamera tidak akan aktif'));
+  L.push(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia
+    ? ok('API kamera tersedia') : no('API kamera tidak tersedia di browser ini'));
+  L.push(typeof Tesseract!=='undefined' ? ok('Pustaka OCR termuat') : no('Pustaka OCR gagal dimuat — cek internet'));
+  L.push(typeof Html5Qrcode!=='undefined' ? ok('Pustaka scanner termuat') : no('Pustaka scanner gagal dimuat — cek internet'));
+  L.push(typeof ExcelJS!=='undefined' ? ok('Pustaka Excel termuat') : no('Pustaka Excel gagal dimuat — cek internet'));
+  L.push(db ? ok('Database lokal siap ('+DATA.length+' data tersimpan)') : no('Database lokal gagal dibuka'));
+  try{
+    const es=await navigator.storage.estimate();
+    L.push(ok('Ruang penyimpanan: '+(es.usage/1048576).toFixed(1)+' MB terpakai'));
+  }catch(e){}
+  h.innerHTML=L.join('');
+};
+
+/* ---------- INIT ---------- */
+(async function init(){
+  $('fTgl').value=todayStr();
+  renderFotoGrid();
+  try{
+    await openDB();
+    await loadData();
+    fillDatalist();
+  }catch(e){ toast('Database gagal dibuka: '+e.message,'err') }
+  const st=getState();
+  if(st.tab&&['input','data','set'].includes(st.tab)) showTab(st.tab);
+  else renderTable();
+})();
+</script>
+</body>
+</html>
